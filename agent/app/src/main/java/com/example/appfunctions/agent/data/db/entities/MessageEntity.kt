@@ -50,6 +50,8 @@ data class MessageEntity(
     val pendingIntentId: String? = null,
     val targetPackageName: String? = null,
     val attachments: List<MessageAttachment> = emptyList(),
+    /** The content of each A2UI resource returned by tools during this response. */
+    val a2uiResources: List<String> = emptyList(),
 )
 
 @Serializable
@@ -74,6 +76,18 @@ class MessageAttachmentConverter {
             emptyList()
         } else {
             runCatching { dbJson.decodeFromString<List<MessageAttachment>>(jsonString) }
+                .getOrDefault(emptyList())
+        }
+
+    @androidx.room.TypeConverter
+    fun fromStrings(values: List<String>): String = dbJson.encodeToString(values)
+
+    @androidx.room.TypeConverter
+    fun toStrings(jsonString: String?): List<String> =
+        if (jsonString.isNullOrBlank()) {
+            emptyList()
+        } else {
+            runCatching { dbJson.decodeFromString<List<String>>(jsonString) }
                 .getOrDefault(emptyList())
         }
 }

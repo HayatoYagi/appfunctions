@@ -26,7 +26,7 @@ plugins {
 android {
     namespace = "com.example.appfunctions.agent"
     compileSdk {
-        version = release(37)
+        version = release(37) { minorApiLevel = 1 }
     }
 
     defaultConfig {
@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.androidx.appfunctions)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.a2ui)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.text.google.fonts)

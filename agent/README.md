@@ -40,6 +40,17 @@ use the `run_privileged.sh` script.
 ./run_privileged.sh --build --flavor retail --api-key YOUR_API_KEY
 ```
 
+## Previewing A2UI
+
+The Testing Agent renders `application/a2ui+json` resources that AppFunctions return through
+`AppFunctionResourceContainer`, in both the Debugger and the Agent tabs. It renders the A2UI Basic
+Catalog with `androidx.a2ui`, and reports other catalogs as errors. User actions are listed below
+the surface rather than sent back to the app.
+
+To try it, run ChatApp's `fetchSendMessageCard` function from the Debugger tab.
+
+This preview doesn't show how Gemini renders a resource, or whether Gemini accepts it.
+
 ## Testing
 
 Always run relevant tests to verify your changes before committing.

@@ -36,6 +36,7 @@ class SendMessageUseCase
          * @param role The role of the sender (USER or ASSISTANT).
          * @param textContent The content of the message.
          * @param processingStatus The processing status of the message.
+         * @param a2uiResources The content of A2UI resources to render with the message.
          */
         suspend operator fun invoke(
             threadId: String,
@@ -45,6 +46,7 @@ class SendMessageUseCase
             pendingIntentId: String? = null,
             targetPackageName: String? = null,
             attachments: List<MessageAttachment> = emptyList(),
+            a2uiResources: List<String> = emptyList(),
         ) {
             val message =
                 MessageEntity(
@@ -57,6 +59,7 @@ class SendMessageUseCase
                     pendingIntentId = pendingIntentId,
                     targetPackageName = targetPackageName,
                     attachments = attachments,
+                    a2uiResources = a2uiResources,
                 )
             chatRepository.sendMessage(message)
         }

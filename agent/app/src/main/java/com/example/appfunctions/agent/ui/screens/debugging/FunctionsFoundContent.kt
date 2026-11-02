@@ -71,8 +71,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appfunctions.agent.R
+import com.example.appfunctions.agent.domain.a2ui.extractA2uiResourceContents
 import com.example.appfunctions.agent.domain.appfunction.AppFunctionExceptionFormatter
 import com.example.appfunctions.agent.domain.appfunction.ExecuteAppFunctionResult
+import com.example.appfunctions.agent.ui.components.A2uiResourcePreview
 import com.example.appfunctions.agent.ui.theme.AppFunctionsAgentTheme
 import com.example.appfunctions.agent.ui.theme.GoogleSansCodeFontFamily
 import org.json.JSONArray
@@ -399,8 +401,15 @@ private fun ExecutionResultDataView(
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
     val flatItems = remember(formattedJson) { parseJsonToDisplayItems(formattedJson) }
+    val a2uiResources = remember(formattedJson) { extractA2uiResourceContents(formattedJson) }
 
     Column(modifier = modifier) {
+        a2uiResources.forEach { resource ->
+            A2uiResourcePreview(
+                content = resource,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+        }
         if (flatItems.isEmpty()) {
             SelectionContainer {
                 Text(
