@@ -21,8 +21,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 
 /** The MIME type of an A2UI resource returned by an AppFunction. */
 const val A2UI_MIME_TYPE = "application/a2ui+json"
@@ -109,8 +107,6 @@ fun parseA2uiContent(content: String): A2uiPayload {
     )
 }
 
-private fun JsonObject.stringOrNull(key: String): String? =
-    (this[key] as? JsonPrimitive)?.takeIf { it.isString }?.contentOrNull
+private fun JsonObject.stringOrNull(key: String): String? = (this[key] as? JsonPrimitive)?.takeIf { it.isString }?.contentOrNull
 
-private fun String.isA2uiMimeType(): Boolean =
-    substringBefore(';').trim().equals(A2UI_MIME_TYPE, ignoreCase = true)
+private fun String.isA2uiMimeType(): Boolean = substringBefore(';').trim().equals(A2UI_MIME_TYPE, ignoreCase = true)
