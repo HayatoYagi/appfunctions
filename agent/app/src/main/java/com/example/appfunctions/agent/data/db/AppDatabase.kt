@@ -24,7 +24,7 @@ import com.example.appfunctions.agent.data.db.entities.MessageAttachmentConverte
 import com.example.appfunctions.agent.data.db.entities.MessageEntity
 import com.example.appfunctions.agent.data.db.entities.ThreadEntity
 
-@Database(entities = [ThreadEntity::class, MessageEntity::class], version = 4, exportSchema = false)
+@Database(entities = [ThreadEntity::class, MessageEntity::class], version = 5, exportSchema = false)
 @TypeConverters(MessageAttachmentConverter::class, LlmModelConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun chatDao(): ChatDao

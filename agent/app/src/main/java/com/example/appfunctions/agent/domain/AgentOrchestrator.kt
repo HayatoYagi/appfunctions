@@ -27,6 +27,7 @@ import com.example.appfunctions.agent.data.db.entities.MessageRole
 import com.example.appfunctions.agent.data.db.entities.ThreadEntity
 import com.example.appfunctions.agent.domain.appfunction.AppFunctionExceptionFormatter
 import com.example.appfunctions.agent.domain.appfunction.ConvertInputToAppFunctionDataUseCase
+import com.example.appfunctions.agent.domain.a2ui.extractA2uiResourceContents
 import com.example.appfunctions.agent.domain.appfunction.ExecuteAppFunctionResult
 import com.example.appfunctions.agent.domain.appfunction.ExecuteAppFunctionUseCase
 import com.example.appfunctions.agent.domain.appfunction.GetAppFunctionsParams
@@ -176,6 +177,7 @@ class AgentOrchestrator
             var continueLoop = true
             val currentInput = initialInput
             val capturedAttachments = mutableListOf<MessageAttachment>()
+            val capturedA2uiResources = mutableListOf<String>()
 
             while (continueLoop) {
                 val llmInput = prepareLlmInput(currentToolOutputs, currentInput)
@@ -193,7 +195,13 @@ class AgentOrchestrator
 
                 when (
                     val handleResult =
-                        handleLlmResponse(response, message, tools, capturedAttachments)
+                        handleLlmResponse(
+                            response,
+                            message,
+                            tools,
+                            capturedAttachments,
+                            capturedA2uiResources,
+                        )
                 ) {
                     is HandleResult.Continue -> {
                         currentToolOutputs = handleResult.toolOutputs
@@ -247,6 +255,7 @@ class AgentOrchestrator
             message: MessageEntity,
             tools: List<AppFunctionMetadata>,
             capturedAttachments: MutableList<MessageAttachment>,
+            capturedA2uiResources: MutableList<String>,
         ): HandleResult {
             return when (response) {
                 is LlmResponse.Success -> {
@@ -267,7 +276,13 @@ class AgentOrchestrator
                     if (toolCalls.isNotEmpty()) {
                         when (
                             val toolResult =
-                                executeToolCalls(toolCalls, tools, message, capturedAttachments)
+                                executeToolCalls(
+                                    toolCalls,
+                                    tools,
+                                    message,
+                                    capturedAttachments,
+                                    capturedA2uiResources,
+                                )
                         ) {
                             is ExecuteToolCallsResult.Success -> {
                                 if (textContent.isNotEmpty()) {
@@ -304,13 +319,18 @@ class AgentOrchestrator
                             }
                         }
                     } else {
-                        if (textContent.isNotEmpty() || capturedAttachments.isNotEmpty()) {
+                        if (
+                            textContent.isNotEmpty() ||
+                            capturedAttachments.isNotEmpty() ||
+                            capturedA2uiResources.isNotEmpty()
+                        ) {
                             sendMessageUseCase(
                                 threadId = message.threadId,
                                 role = MessageRole.ASSISTANT,
                                 textContent = textContent,
                                 processingStatus = MessageProcessingStatus.PROCESSED,
                                 attachments = capturedAttachments,
+                                a2uiResources = capturedA2uiResources,
                             )
                         }
                         HandleResult.Stop
@@ -335,6 +355,7 @@ class AgentOrchestrator
             tools: List<AppFunctionMetadata>,
             message: MessageEntity,
             capturedAttachments: MutableList<MessageAttachment>,
+            capturedA2uiResources: MutableList<String>,
         ): ExecuteToolCallsResult {
             val results = mutableListOf<ToolOutput>()
             for (toolCall in toolCalls) {
@@ -404,6 +425,9 @@ class AgentOrchestrator
                         if (attachment != null) {
                             capturedAttachments.add(attachment)
                         }
+                        capturedA2uiResources.addAll(
+                            extractA2uiResourceContents(executionResult.formattedJson),
+                        )
                     }
 
                     is ExecuteAppFunctionResult.PendingIntentAction -> {

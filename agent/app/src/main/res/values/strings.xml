@@ -117,4 +117,9 @@
     <!-- Instrumentation Error -->
     <string name="dialog_instrumentation_failed_title">Instrumentation Failed</string>
     <string name="dialog_instrumentation_failed_message">Only one instrumentation can run at a time. Please stop the other instrumentation and try again.</string>
+    <string name="a2ui_preview_title">A2UI preview</string>
+    <string name="a2ui_show_json">Show JSON</string>
+    <string name="a2ui_hide_json">Hide JSON</string>
+    <string name="a2ui_media_unsupported">Media isn\'t supported in this preview</string>
+    <string name="a2ui_action_sent">Action: %1$s</string>
 </resources>

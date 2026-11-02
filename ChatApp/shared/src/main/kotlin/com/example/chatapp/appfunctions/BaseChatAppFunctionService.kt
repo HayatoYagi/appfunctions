@@ -170,7 +170,7 @@ abstract class BaseChatAppFunctionService : AppFunctionService() {
                     "updateComponents",
                     JSONObject().apply {
                         put("surfaceId", surfaceId)
-                        put("components", JSONArray().put(confirmationComponent).toString())
+                        put("components", JSONArray().put(confirmationComponent))
                     },
                 )
             }
@@ -188,6 +188,43 @@ abstract class BaseChatAppFunctionService : AppFunctionService() {
             )
 
         return ConfirmationPreview(resources = listOf(a2uiResource))
+    }
+
+    /**
+     * Fetch a rich preview card for a message before sending it.
+     * Required workflow: Call "searchContacts" first to obtain a valid endpointValue.
+     *
+     * @param endpointValue The unique identifier for the recipient or group obtained from searchContacts.
+     * @param messageBody The text content of the message to send. Cannot be empty or blank.
+     * @return A [ConfirmationPreview] object containing an A2UI Basic Catalog card.
+     * @throws AppFunctionInvalidArgumentException If messageBody is empty or blank. If thrown, ask the user to provide the message content to send.
+     * @throws AppFunctionElementNotFoundException If no contact or group matches endpointValue. If thrown, call "searchContacts" to find the correct ID.
+     */
+    @OptIn(ExperimentalAppFunctionsApi::class)
+    @AppFunctionDeclaration(isDescribedByKDoc = true)
+    suspend fun fetchSendMessageCard(
+        endpointValue: String,
+        messageBody: String,
+    ): ConfirmationPreview {
+        if (messageBody.isBlank()) {
+            throw AppFunctionInvalidArgumentException("Message body cannot be empty")
+        }
+        val displayName =
+            recipientsRepository.getRecipientById(endpointValue)?.name
+                ?: recipientsRepository.getGroupById(endpointValue)?.name
+                ?: throw AppFunctionElementNotFoundException(
+                    "No contact or group found for endpointValue: $endpointValue",
+                )
+
+        return ConfirmationPreview(
+            resources =
+                listOf(
+                    AppFunctionTextResource(
+                        mimeType = "application/a2ui+json",
+                        content = MessageCardA2uiBuilder.build(endpointValue, displayName, messageBody),
+                    ),
+                ),
+        )
     }
 
     /**
