@@ -128,7 +128,7 @@ import com.example.appfunctions.agent.data.db.entities.MessageRole
 import com.example.appfunctions.agent.data.db.entities.ThreadEntity
 import com.example.appfunctions.agent.domain.AgentStatus
 import com.example.appfunctions.agent.domain.appfunction.AppInfo
-import com.example.appfunctions.agent.ui.components.A2uiResourcePreview
+import com.example.appfunctions.agent.ui.components.A2uiResourceRenderer
 import com.example.appfunctions.agent.ui.screens.debugging.LazyExposedDropdownMenu
 import com.mikepenz.markdown.m3.Markdown
 import kotlinx.coroutines.CoroutineScope
@@ -856,7 +856,7 @@ fun MessageBubble(
             }
             message.a2uiResources.forEach { resource ->
                 Spacer(modifier = Modifier.height(6.dp))
-                A2uiResourcePreview(content = resource)
+                A2uiResourceRenderer(content = resource)
             }
         }
     }

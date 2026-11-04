@@ -74,7 +74,7 @@ import com.example.appfunctions.agent.R
 import com.example.appfunctions.agent.domain.a2ui.extractA2uiResourceContents
 import com.example.appfunctions.agent.domain.appfunction.AppFunctionExceptionFormatter
 import com.example.appfunctions.agent.domain.appfunction.ExecuteAppFunctionResult
-import com.example.appfunctions.agent.ui.components.A2uiResourcePreview
+import com.example.appfunctions.agent.ui.components.A2uiResourceRenderer
 import com.example.appfunctions.agent.ui.theme.AppFunctionsAgentTheme
 import com.example.appfunctions.agent.ui.theme.GoogleSansCodeFontFamily
 import org.json.JSONArray
@@ -405,7 +405,7 @@ private fun ExecutionResultDataView(
 
     Column(modifier = modifier) {
         a2uiResources.forEach { resource ->
-            A2uiResourcePreview(
+            A2uiResourceRenderer(
                 content = resource,
                 modifier = Modifier.padding(bottom = 8.dp),
             )

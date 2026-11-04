@@ -74,7 +74,7 @@ private val MaxSurfaceHeight = 480.dp
  * @param modifier The modifier to apply to the preview.
  */
 @Composable
-fun A2uiResourcePreview(
+fun A2uiResourceRenderer(
     content: String,
     modifier: Modifier = Modifier,
 ) {
